@@ -8,3 +8,5 @@ The objectives of this project were the following:
  - to use the generic django classes for the views
  - try to keep the same "logic" as the generic Django views (e.g. make redirects after the create/update/delete/... using HX-Location from htmx 1.8)
  - use as few "partial" views as possible
+
+demo : https://django-htmx-todomvc.herokuapp.com/
