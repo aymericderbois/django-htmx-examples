@@ -4,23 +4,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Django with Htmx</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Django with Htmx</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-    <!-- todomvc css -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/todomvc-app-css@2.4.2/index.css">
+  <!-- todomvc css -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/todomvc-app-css@2.4.2/index.css">
 
-    <!-- htmx -->
-    <script src="{% static "core/js/htmx-1.8.0-dev.js" %}" defer></script>
+  <!-- htmx -->
+  <script src="{% static "core/js/htmx-1.8.0-dev.js" %}" defer></script>
+  <script src="https://unpkg.com/hyperscript.org@0.9.5"></script>
+
 
 </head>
 
 <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
 <section class="todoapp">
-    {% block content %}
-    {% endblock %}
+  {% block content %}
+  {% endblock %}
 </section>
 {% django_browser_reload_script %}
 </body>
