@@ -29,7 +29,7 @@ class TodoSessionMixin:
         return Todo.objects.filter(session_uuid=get_session_key(self.request))
 
     def get_queryset(self):
-        return self.get_session_todo_queryset()
+        return self.get_session_todo_queryset().order_by("-created_at")
 
 
 class TodoListView(TodoSessionMixin, ListView):
