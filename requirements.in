@@ -1,3 +1,7 @@
 django
 django-htmx
 django-browser-reload
+gunicorn
+whitenoise
+dj-database-url
+psycopg2-binary

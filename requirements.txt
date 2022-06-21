@@ -6,6 +6,8 @@
 #
 asgiref==3.5.2
     # via django
+dj-database-url==0.5.0
+    # via -r requirements.in
 django==4.0.5
     # via
     #   -r requirements.in
@@ -15,5 +17,14 @@ django-browser-reload==1.6.0
     # via -r requirements.in
 django-htmx==1.12.0
     # via -r requirements.in
+gunicorn==20.1.0
+    # via -r requirements.in
+psycopg2-binary==2.9.3
+    # via -r requirements.in
 sqlparse==0.4.2
     # via django
+whitenoise==6.2.0
+    # via -r requirements.in
+
+# The following packages are considered to be unsafe in a requirements file:
+# setuptools
