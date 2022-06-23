@@ -37,8 +37,8 @@ class TodoListView(TodoSessionMixin, ListView):
 
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
-        ctx["number_todo_active"] = self.get_session_todo_queryset().filter(is_done=False).count()
-        ctx["number_todo_completed"] = self.get_session_todo_queryset().filter(is_done=True).count()
+        ctx["number_todo_active"] = self.get_queryset().filter(is_done=False).count()
+        ctx["number_todo_completed"] = self.get_queryset().filter(is_done=True).count()
         ctx["number_todo_total"] = ctx["number_todo_active"] + ctx["number_todo_completed"]
         ctx["number_todo"] = len(self.object_list)
         ctx["form"] = TodoForm()
