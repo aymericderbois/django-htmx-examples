@@ -10,3 +10,7 @@ The objectives of this project were the following:
  - use as few "partial" views as possible
 
 demo : https://django-htmx-todomvc.herokuapp.com/
+
+# HTMX 1.8
+
+Documentation of the HTMX "HX-Location" attribute: https://htmx.org/headers/hx-location/
