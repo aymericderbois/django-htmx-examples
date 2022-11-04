@@ -1,27 +1,11 @@
-import uuid
-
-from django.http import HttpResponse, Http404
+from django.http import Http404
 from django.views import View
 from django.views.generic import ListView, CreateView, UpdateView
 from django.views.generic.detail import SingleObjectMixin, DetailView
 
 from todomvc.core.form import TodoForm, TodoUpdateForm
 from todomvc.core.models import Todo
-
-
-def get_session_key(request):
-    """Get or create a todolist for the current session."""
-    session_uuid = request.session.get("todo_uuid", str(uuid.uuid4()))
-    request.session["todo_uuid"] = session_uuid
-    return session_uuid
-
-
-def htmx_redirect(url):
-    return HttpResponse(
-        content="",
-        status=204,
-        headers={"HX-Location": url},
-    )
+from todomvc.core.utils import get_session_key, htmx_redirect
 
 
 class TodoSessionMixin:
@@ -33,13 +17,14 @@ class TodoSessionMixin:
 
 
 class TodoListView(TodoSessionMixin, ListView):
+    template_name = "cbv_hx_location/todo_list.html"
     extra_context = {"menu": "all"}
 
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
-        ctx["number_todo_active"] = self.get_session_todo_queryset().filter(is_done=False).count()
-        ctx["number_todo_completed"] = self.get_session_todo_queryset().filter(is_done=True).count()
-        ctx["number_todo_total"] = ctx["number_todo_active"] + ctx["number_todo_completed"]
+        ctx["number_todo_active"] = self.get_session_todo_queryset().filter(is_done=False).count()  # fmt: skip
+        ctx["number_todo_completed"] = self.get_session_todo_queryset().filter(is_done=True).count()  # fmt: skip
+        ctx["number_todo_total"] = ctx["number_todo_active"] + ctx["number_todo_completed"]  # fmt: skip
         ctx["number_todo"] = len(self.object_list)
         ctx["form"] = TodoForm()
         return ctx
@@ -86,7 +71,7 @@ class TodoToggleAllView(TodoSessionMixin, View):
 
 
 class TodoItemPartialView(TodoSessionMixin, DetailView):
-    template_name = "core/todo_item.html"
+    template_name = "cbv_hx_location/todo_item.html"
 
 
 class TodoDeleteView(TodoSessionMixin, SingleObjectMixin, View):
@@ -125,7 +110,7 @@ class TodoCreateView(CreateView):
 
 class TodoUpdateView(TodoSessionMixin, UpdateView):
     form_class = TodoUpdateForm
-    template_name = "core/todo_item_edit.html"
+    template_name = "cbv_hx_location/todo_item_edit.html"
 
     def form_valid(self, form):
         form.save()

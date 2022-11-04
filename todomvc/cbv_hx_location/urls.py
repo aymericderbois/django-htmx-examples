@@ -13,7 +13,7 @@ from todomvc.cbv_hx_location.views import (
     TodoItemPartialView,
 )
 
-app_name = "todo"
+app_name = "cbv_hx_location"
 
 urlpatterns = [
     path(

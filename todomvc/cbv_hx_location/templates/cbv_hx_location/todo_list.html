@@ -1,4 +1,4 @@
-{% extends "core/base.html" %}
+{% extends "cbv_hx_location/base.html" %}
 
 {% block content %}
   <header class="header">
@@ -19,7 +19,7 @@
       <label for="toggle-all">Mark all as complete</label>
       <ul class="todo-list">
         {% for object in object_list %}
-          {% include "core/todo_item.html" with object=object %}
+          {% include "cbv_hx_location/todo_item.html" with object=object %}
         {% endfor %}
       </ul>
     </section>
