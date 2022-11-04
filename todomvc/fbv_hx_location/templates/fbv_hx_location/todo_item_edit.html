@@ -1,0 +1,15 @@
+<li
+  hx-trigger="closeEditing"
+  hx-get="{% url "fbv_hx_location:todo_partial_item" pk=todo.pk %}"
+  hx-swap="outerHTML"
+  class="editing"
+  _="on click from elsewhere send closeEditing to me"
+>
+  <form
+    action="{% url "fbv_hx_location:todo_edit" pk=todo.pk %}"
+    method="post"
+    hx-boost="true"
+  >
+    {{ form.title }}
+  </form>
+</li>

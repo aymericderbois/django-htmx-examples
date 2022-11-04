@@ -31,6 +31,10 @@ urlpatterns = [
         include("todomvc.cbv_hx_location.urls", namespace="cbv_hx_location"),
     ),
     path(
+        "fbv_hx_location/",
+        include("todomvc.fbv_hx_location.urls", namespace="fbv_hx_location"),
+    ),
+    path(
         "__reload__/",
         include("django_browser_reload.urls"),
     ),

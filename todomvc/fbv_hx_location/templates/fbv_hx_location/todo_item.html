@@ -1,0 +1,23 @@
+<li {% if todo.is_done %}class="completed"{% endif %}>
+  <div class="view">
+    <input
+      type="checkbox"
+      {% if todo.is_done %}checked{% endif %}
+      hx-post="{% url "fbv_hx_location:todo_toggle" pk=todo.pk %}"
+      class="toggle"
+    >
+    <label
+      hx-get="{% url "fbv_hx_location:todo_edit" pk=todo.pk %}"
+      hx-trigger="dblclick"
+      hx-target="closest li"
+      hx-swap="outerHTML"
+    >
+      {{ todo.title }}
+    </label>
+    <button
+      hx-delete="{% url "fbv_hx_location:todo_delete" pk=todo.pk %}"
+      class="destroy"
+    >
+    </button>
+  </div>
+</li>
