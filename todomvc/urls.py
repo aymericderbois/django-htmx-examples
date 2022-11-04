@@ -18,8 +18,20 @@ from django.urls import path, include
 from django.views.generic.base import RedirectView
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
-    path("", RedirectView.as_view(url="/list")),
-    path("", include("todomvc.core.urls", namespace="todo")),
-    path("__reload__/", include("django_browser_reload.urls")),
+    path(
+        "admin/",
+        admin.site.urls,
+    ),
+    path(
+        "",
+        RedirectView.as_view(url="cbv_hx_location/list"),
+    ),
+    path(
+        "cbv_hx_location/",
+        include("todomvc.cbv_hx_location.urls", namespace="cbv_hx_location"),
+    ),
+    path(
+        "__reload__/",
+        include("django_browser_reload.urls"),
+    ),
 ]

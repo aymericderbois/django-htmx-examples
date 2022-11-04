@@ -3,11 +3,11 @@
     <input
       type="checkbox"
       {% if object.is_done %}checked{% endif %}
-      hx-post="{% url "todo:toggle" pk=object.pk %}"
+      hx-post="{% url "cbv_hx_location:toggle" pk=object.pk %}"
       class="toggle"
     >
     <label
-      hx-get="{% url "todo:list:item-edit-partial" pk=object.pk %}"
+      hx-get="{% url "cbv_hx_location:item-edit-partial" pk=object.pk %}"
       hx-trigger="dblclick"
       hx-target="closest li"
       hx-swap="outerHTML"
@@ -15,7 +15,7 @@
       {{ object.title }}
     </label>
     <button
-      hx-delete="{% url "todo:delete-view" pk=object.pk %}"
+      hx-delete="{% url "cbv_hx_location:delete-view" pk=object.pk %}"
       class="destroy"
     >
     </button>

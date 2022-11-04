@@ -34,6 +34,7 @@ ALLOWED_HOSTS = ["*"]
 
 INSTALLED_APPS = [
     "todomvc.core",
+    "todomvc.cbv_hx_location",
     "django_browser_reload",
     "django_htmx",
     "django.contrib.admin",

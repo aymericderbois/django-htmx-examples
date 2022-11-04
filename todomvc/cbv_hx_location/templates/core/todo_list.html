@@ -3,7 +3,7 @@
 {% block content %}
   <header class="header">
     <h1>todos</h1>
-    <form action="{% url "todo:create" %}" method="post" hx-boost="true">
+    <form action="{% url "cbv_hx_location:create" %}" method="post" hx-boost="true">
       {{ form }}
     </form>
   </header>
@@ -13,7 +13,7 @@
         id="toggle-all"
         {% if number_todo_active == 0 %}checked{% endif %}
         type="checkbox"
-        hx-post="{% url "todo:list:toggle-all" %}"
+        hx-post="{% url "cbv_hx_location:toggle-all" %}"
         class="toggle-all"
       >
       <label for="toggle-all">Mark all as complete</label>
@@ -28,7 +28,7 @@
       <ul class="filters">
         <li>
           <a
-            href="{% url "todo:list:all" %}"
+            href="{% url "cbv_hx_location:list-all" %}"
             hx-boost="true"
             {% if menu == "all" %}class="selected"{% endif %}
           >
@@ -37,7 +37,7 @@
         </li>
         <li>
           <a
-            href="{% url "todo:list:active" %}"
+            href="{% url "cbv_hx_location:list-active" %}"
             hx-boost="true"
             {% if menu == "active" %}class="selected"{% endif %}
           >
@@ -46,7 +46,7 @@
         </li>
         <li>
           <a
-            href="{% url "todo:list:completed" %}"
+            href="{% url "cbv_hx_location:list-completed" %}"
             hx-boost="true"
             {% if menu == "completed" %}class="selected"{% endif %}
           >
@@ -56,7 +56,7 @@
       </ul>
       {% if number_todo_completed %}
         <button
-          hx-delete="{% url "todo:list:clear-completed" %}"
+          hx-delete="{% url "cbv_hx_location:clear-completed" %}"
           class="clear-completed"
         >
           Clear completed
