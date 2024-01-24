@@ -1,6 +1,7 @@
 from django import forms
 
-from todomvc.core.models import Todo
+from apps.todos.models import Todo
+
 
 
 class TodoForm(forms.ModelForm):
@@ -18,6 +19,10 @@ class TodoForm(forms.ModelForm):
     class Meta:
         model = Todo
         fields = ["title"]
+
+    def save(self, session_uuid: str, *args, **kwargs):
+        self.instance.session_uuid = session_uuid
+        return super().save(*args, **kwargs)
 
 
 class TodoUpdateForm(TodoForm):

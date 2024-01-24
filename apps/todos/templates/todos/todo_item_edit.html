@@ -1,12 +1,12 @@
 <li
   hx-trigger="closeEditing"
-  hx-get="{% url "cbv_hx_location:item-partial" pk=object.pk %}"
+  hx-get="{% url "todos:todo_partial_item" pk=todo.pk %}"
   hx-swap="outerHTML"
   class="editing"
   _="on click from elsewhere send closeEditing to me"
 >
   <form
-    action="{% url "cbv_hx_location:item-edit-partial" pk=object.pk %}"
+    action="{% url "todos:todo_edit" pk=todo.pk %}"
     method="post"
     hx-boost="true"
   >

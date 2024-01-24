@@ -28,14 +28,15 @@ SECRET_KEY = "django-insecure-=(u=xxb#8ugr+bn+r8w^s6292fvepmtu5i-(z361zg=%=llb&)
 DEBUG = strtobool(os.getenv("DEBUG", "off"))
 
 ALLOWED_HOSTS = ["*"]
+CSRF_TRUSTED_ORIGINS = ["https://*", "http://*"]
 
+AUTH_USER_MODEL = "users.User"
 
 # Application definition
 
 INSTALLED_APPS = [
-    "todomvc.core",
-    "todomvc.cbv_hx_location",
-    "todomvc.fbv_hx_location",
+    "apps.users",
+    "apps.todos",
     "django_browser_reload",
     "django_htmx",
     "django.contrib.admin",
@@ -57,6 +58,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django_browser_reload.middleware.BrowserReloadMiddleware",
     "django_htmx.middleware.HtmxMiddleware",
+    "apps.todos.middleware.TodoSessionKeyMiddleware"
 ]
 
 ROOT_URLCONF = "todomvc.urls"
@@ -90,8 +92,8 @@ DATABASES = {
     }
 }
 
-if not DEBUG:
-    DATABASES["default"] = dj_database_url.config(conn_max_age=600, ssl_require=True)
+# if not DEBUG:
+#     DATABASES["default"] = dj_database_url.config(conn_max_age=600, ssl_require=True)
 
 
 # Password validation

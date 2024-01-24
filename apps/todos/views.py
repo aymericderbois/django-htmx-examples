@@ -1,37 +1,35 @@
-from django.shortcuts import render
+from django.http import Http404
+from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 
+from apps.todos.form import TodoForm
+from apps.todos.models import Todo
+from apps.todos.utils import get_session_key, htmx_redirect
+
 from .shortcuts import get_todo_queryset_from_session
-from ..core.form import TodoForm
-from ..core.models import Todo
-from ..core.utils import htmx_redirect, get_session_key
 
 
 @require_http_methods(["GET"])
 def todo_list(request, filter_by="all"):
+    if filter_by not in ["active", "completed", "all"]:
+        raise Http404()
+
     qs = get_todo_queryset_from_session(request).order_by("-created_at")
 
-    todos = qs.all()
-    if filter_by == "active":
-        todos = todos.active()
-    elif filter_by == "completed":
-        todos = todos.completed()
+    todos = qs.all().by_status(filter_by)
 
     number_todo_active = qs.active().count()
     number_todo_completed = qs.completed().count()
-    form = TodoForm()
-    return render(request, "fbv_hx_location/todo_list.html", context=locals())
+    number_todo_total = number_todo_completed + number_todo_active
 
-
-@require_http_methods(["GET"])
-def todo_list_active(request):
-    return todo_list(request, filter_by="active")
-
-
-@require_http_methods(["GET"])
-def todo_list_completed(request):
-    return todo_list(request, filter_by="completed")
+    return render(request, "todos/todo_list.html", context={
+        "todos": todos,
+        "number_todo_total": number_todo_total,
+        "number_todo_active": number_todo_active,
+        "number_todo_completed": number_todo_completed,
+        "form": TodoForm()
+    })
 
 
 @require_http_methods(["POST"])
@@ -51,39 +49,34 @@ def todo_toggle_all(request):
 @require_http_methods(["GET"])
 def todo_partial_item(request, pk: int):
     todo = Todo.objects.from_session(get_session_key(request)).get(pk=pk)
-    return render(request, "fbv_hx_location/todo_item.html", context=locals())
+    return render(request, "todos/todo_item.html", context=locals())
 
 
 @require_http_methods(["POST"])
 def todo_create(request):
     form = TodoForm(request.POST)
     if form.is_valid():
-        form.instance.session_uuid = get_session_key(request)
-        form.save()
+        form.save(session_uuid=request.todo_session_uuid)
     return htmx_redirect(request.htmx.current_url)
 
 
 @require_http_methods(["GET", "POST"])
 def todo_edit(request, pk: int):
-    todo = Todo.objects.from_session(get_session_key(request)).get(pk=pk)
-    form = TodoForm(instance=todo)
-    if request.method == "POST":
-        form = TodoForm(request.POST, instance=todo)
-        if form.is_valid():
-            form.instance.session_uuid = get_session_key(request)
-            form.save()
+    todo = get_object_or_404(Todo, session_uuid=request.todo_session_uuid, pk=pk)
+    form = TodoForm(instance=todo, data=request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        form.save(session_uuid=request.todo_session_uuid)
         return htmx_redirect(request.htmx.current_url)
-    return render(request, "fbv_hx_location/todo_item_edit.html", context=locals())
+    return render(request, "todos/todo_item_edit.html", context=locals())
 
 
 @require_http_methods(["DELETE"])
 def todo_delete(request, pk: int):
-    todo = Todo.objects.from_session(get_session_key(request)).get(pk=pk)
-    todo.delete()
+    get_object_or_404(Todo, session_uuid=request.todo_session_uuid, pk=pk).delete()
     return htmx_redirect(request.htmx.current_url)
 
 
 @require_http_methods(["DELETE"])
 def todo_clear_completed(request):
-    Todo.objects.from_session(get_session_key(request)).completed().delete()
+    Todo.objects.from_session(request.todo_session_uuid).completed().delete()
     return htmx_redirect(request.htmx.current_url)

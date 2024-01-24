@@ -1,3 +1,4 @@
+from typing import Literal
 from django.db import models
 
 
@@ -7,6 +8,13 @@ class TodoQuerySet(models.QuerySet):
 
     def completed(self):
         return self.filter(is_done=True)
+
+    def by_status(self, filter_by: Literal["all", "active", "completed"]):
+        if filter_by == "active":
+            return self.active()
+        elif filter_by == "completed":
+            return self.completed()
+        return self
 
     def from_session(self, session_uuid):
         return self.filter(session_uuid=session_uuid)

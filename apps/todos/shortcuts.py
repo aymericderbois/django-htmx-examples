@@ -1,5 +1,7 @@
-from todomvc.core.models import Todo
-from todomvc.core.utils import get_session_key
+
+
+from apps.todos.models import Todo
+from apps.todos.utils import get_session_key
 
 
 def get_todo_queryset_from_session(request):

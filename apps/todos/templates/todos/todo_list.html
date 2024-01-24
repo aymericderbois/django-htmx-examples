@@ -1,25 +1,25 @@
-{% extends "cbv_hx_location/base.html" %}
+{% extends "todos/base.html" %}
 
 {% block content %}
   <header class="header">
     <h1>todos</h1>
-    <form action="{% url "cbv_hx_location:create" %}" method="post" hx-boost="true">
+    <form action="{% url "todos:todo_create" %}" method="post" hx-boost="true">
       {{ form }}
     </form>
   </header>
-  {% if number_todo_total %}
+  {% if number_todo_total > 0 %}
     <section class="main">
       <input
         id="toggle-all"
         {% if number_todo_active == 0 %}checked{% endif %}
         type="checkbox"
-        hx-post="{% url "cbv_hx_location:toggle-all" %}"
+        hx-post="{% url "todos:todo_toggle_all" %}"
         class="toggle-all"
       >
       <label for="toggle-all">Mark all as complete</label>
       <ul class="todo-list">
-        {% for object in object_list %}
-          {% include "cbv_hx_location/todo_item.html" with object=object %}
+        {% for todo in todos %}
+          {% include "todos/todo_item.html" with object=object %}
         {% endfor %}
       </ul>
     </section>
@@ -28,7 +28,7 @@
       <ul class="filters">
         <li>
           <a
-            href="{% url "cbv_hx_location:list-all" %}"
+            href="{% url "todos:todo_list" %}"
             hx-boost="true"
             {% if menu == "all" %}class="selected"{% endif %}
           >
@@ -37,7 +37,7 @@
         </li>
         <li>
           <a
-            href="{% url "cbv_hx_location:list-active" %}"
+            href="{% url "todos:todo_list_with_params" filter_by="active" %}"
             hx-boost="true"
             {% if menu == "active" %}class="selected"{% endif %}
           >
@@ -46,7 +46,7 @@
         </li>
         <li>
           <a
-            href="{% url "cbv_hx_location:list-completed" %}"
+            href="{% url "todos:todo_list_with_params" filter_by="completed"  %}"
             hx-boost="true"
             {% if menu == "completed" %}class="selected"{% endif %}
           >
@@ -56,7 +56,7 @@
       </ul>
       {% if number_todo_completed %}
         <button
-          hx-delete="{% url "cbv_hx_location:clear-completed" %}"
+          hx-delete="{% url "todos:todo_clear_completed" %}"
           class="clear-completed"
         >
           Clear completed

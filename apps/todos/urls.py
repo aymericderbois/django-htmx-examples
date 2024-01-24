@@ -2,12 +2,11 @@ from django.urls import path
 
 from . import views
 
-app_name = "fbv_hx_location"
+app_name = "todos"
 
 urlpatterns = [
-    path("list", views.todo_list, name="todo_list"),
-    path("list/active", views.todo_list_active, name="todo_list_active"),
-    path("list/completed", views.todo_list_completed, name="todo_list_completed"),
+    path("", views.todo_list, name="todo_list"),
+    path("list/<str:filter_by>", views.todo_list, name="todo_list_with_params"),
     path("toggle/<int:pk>", views.todo_toggle, name="todo_toggle"),
     path("toggle-all", views.todo_toggle_all, name="todo_toggle_all"),
     path("partial-item/<int:pk>", views.todo_partial_item, name="todo_partial_item"),
