@@ -1,4 +1,4 @@
-"""todomvc URL Configuration
+"""project URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/4.0/topics/http/urls/
@@ -23,9 +23,9 @@ urlpatterns = [
         admin.site.urls,
     ),
     path(
-        "",
-        include("apps.todos.urls", namespace="todos"),
-        name="todos",
+        "todomvc",
+        include("apps.todomvc.urls", namespace="todomvc"),
+        name="todomvc",
     ),
     path(
         "__reload__/",

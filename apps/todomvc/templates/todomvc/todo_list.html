@@ -1,9 +1,9 @@
-{% extends "todos/base.html" %}
+{% extends "todomvc/base.html" %}
 
 {% block content %}
   <header class="header">
     <h1>todos</h1>
-    <form action="{% url "todos:todo_create" %}" method="post" hx-boost="true">
+    <form action="{% url "todomvc:todo_create" %}" method="post" hx-boost="true">
       {{ form }}
     </form>
   </header>
@@ -13,13 +13,13 @@
         id="toggle-all"
         {% if number_todo_active == 0 %}checked{% endif %}
         type="checkbox"
-        hx-post="{% url "todos:todo_toggle_all" %}"
+        hx-post="{% url "todomvc:todo_toggle_all" %}"
         class="toggle-all"
       >
       <label for="toggle-all">Mark all as complete</label>
       <ul class="todo-list">
         {% for todo in todos %}
-          {% include "todos/todo_item.html" with object=object %}
+          {% include "todomvc/todo_item.html" with object=object %}
         {% endfor %}
       </ul>
     </section>
@@ -28,7 +28,7 @@
       <ul class="filters">
         <li>
           <a
-            href="{% url "todos:todo_list" %}"
+            href="{% url "todomvc:todo_list" %}"
             hx-boost="true"
             {% if menu == "all" %}class="selected"{% endif %}
           >
@@ -37,7 +37,7 @@
         </li>
         <li>
           <a
-            href="{% url "todos:todo_list_with_params" filter_by="active" %}"
+            href="{% url "todomvc:todo_list_with_params" filter_by="active" %}"
             hx-boost="true"
             {% if menu == "active" %}class="selected"{% endif %}
           >
@@ -46,7 +46,7 @@
         </li>
         <li>
           <a
-            href="{% url "todos:todo_list_with_params" filter_by="completed"  %}"
+            href="{% url "todomvc:todo_list_with_params" filter_by="completed"  %}"
             hx-boost="true"
             {% if menu == "completed" %}class="selected"{% endif %}
           >
@@ -56,7 +56,7 @@
       </ul>
       {% if number_todo_completed %}
         <button
-          hx-delete="{% url "todos:todo_clear_completed" %}"
+          hx-delete="{% url "todomvc:todo_clear_completed" %}"
           class="clear-completed"
         >
           Clear completed

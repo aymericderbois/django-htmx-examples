@@ -3,11 +3,11 @@
     <input
       type="checkbox"
       {% if todo.is_done %}checked{% endif %}
-      hx-post="{% url "todos:todo_toggle" pk=todo.pk %}"
+      hx-post="{% url "todomvc:todo_toggle" pk=todo.pk %}"
       class="toggle"
     >
     <label
-      hx-get="{% url "todos:todo_edit" pk=todo.pk %}"
+      hx-get="{% url "todomvc:todo_edit" pk=todo.pk %}"
       hx-trigger="dblclick"
       hx-target="closest li"
       hx-swap="outerHTML"
@@ -15,7 +15,7 @@
       {{ todo.title }}
     </label>
     <button
-      hx-delete="{% url "todos:todo_delete" pk=todo.pk %}"
+      hx-delete="{% url "todomvc:todo_delete" pk=todo.pk %}"
       class="destroy"
     >
     </button>

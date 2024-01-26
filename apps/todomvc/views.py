@@ -1,13 +1,10 @@
 from django.http import Http404
 from django.shortcuts import get_object_or_404, render
-from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 
-from apps.todos.form import TodoForm
-from apps.todos.models import Todo
-from apps.todos.utils import get_session_key, htmx_redirect
-
-from .shortcuts import get_todo_queryset_from_session
+from apps.todomvc.form import TodoForm
+from apps.todomvc.models import Todo
+from apps.core.shortcuts import htmx_redirect
 
 
 @require_http_methods(["GET"])
@@ -15,7 +12,7 @@ def todo_list(request, filter_by="all"):
     if filter_by not in ["active", "completed", "all"]:
         raise Http404()
 
-    qs = get_todo_queryset_from_session(request).order_by("-created_at")
+    qs = Todo.objects.from_session(request.todo_session_uuid).order_by("-created_at")
 
     todos = qs.all().by_status(filter_by)
 
@@ -23,18 +20,22 @@ def todo_list(request, filter_by="all"):
     number_todo_completed = qs.completed().count()
     number_todo_total = number_todo_completed + number_todo_active
 
-    return render(request, "todos/todo_list.html", context={
-        "todos": todos,
-        "number_todo_total": number_todo_total,
-        "number_todo_active": number_todo_active,
-        "number_todo_completed": number_todo_completed,
-        "form": TodoForm()
-    })
+    return render(
+        request,
+        "todomvc/todo_list.html",
+        context={
+            "todos": todos,
+            "number_todo_total": number_todo_total,
+            "number_todo_active": number_todo_active,
+            "number_todo_completed": number_todo_completed,
+            "form": TodoForm(),
+        },
+    )
 
 
 @require_http_methods(["POST"])
 def todo_toggle(request, pk: int):
-    todo = get_todo_queryset_from_session(request).get(pk=pk)
+    todo = get_object_or_404(Todo, session_uuid=request.todo_session_uuid, pk=pk)
     todo.is_done = not todo.is_done
     todo.save()
     return htmx_redirect(request.htmx.current_url)
@@ -42,14 +43,23 @@ def todo_toggle(request, pk: int):
 
 @require_http_methods(["POST"])
 def todo_toggle_all(request):
-    Todo.objects.toggle_all(get_session_key(request))
+    Todo.objects.toggle_all(request.todo_session_uuid)
     return htmx_redirect(request.htmx.current_url)
 
 
 @require_http_methods(["GET"])
 def todo_partial_item(request, pk: int):
-    todo = Todo.objects.from_session(get_session_key(request)).get(pk=pk)
-    return render(request, "todos/todo_item.html", context=locals())
+    return render(
+        request,
+        "todomvc/todo_item.html",
+        {
+            "todo": get_object_or_404(
+                Todo,
+                session_uuid=request.todo_session_uuid,
+                pk=pk,
+            )
+        },
+    )
 
 
 @require_http_methods(["POST"])
@@ -67,7 +77,12 @@ def todo_edit(request, pk: int):
     if request.method == "POST" and form.is_valid():
         form.save(session_uuid=request.todo_session_uuid)
         return htmx_redirect(request.htmx.current_url)
-    return render(request, "todos/todo_item_edit.html", context=locals())
+
+    return render(
+        request,
+        "todomvc/todo_item_edit.html",
+        context={"todo": todo, "form": form},
+    )
 
 
 @require_http_methods(["DELETE"])
