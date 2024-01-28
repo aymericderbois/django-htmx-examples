@@ -1,0 +1,108 @@
+{% extends "calendar/base.html" %}
+{% load calendar_tags %}
+
+{% load static %}
+
+{% block content %}
+  <div class="container">
+    <div class="card mt-3">
+      <div class="card-header">
+        <h1>Calendar - {{ month|month_name }}</h1>
+      </div>
+      <div id="calendar" class="card-body">
+
+        <!-- Bouton pour naviguer dans le calendrier -->
+        <div class="d-flex justify-content-between align-items-center">
+          <h2 id="current-month">{{ current_month }}</h2>
+
+          <div class="text-success" hidden='' data-activity-indicator=''>
+            <div class="spinner-border spinner-border-sm"></div>
+            <span>Loading ...</span>
+          </div>
+
+          <div>
+            <button
+              class="btn btn-secondary me-2 btn-sm"
+              type="button"
+              hx-get="{% url "calendar:index" %}"
+              hx-target="body"
+              data-bs-toggle="tooltip"
+              data-bs-placement="top"
+              title="Today"
+            >
+              Today
+            </button>
+
+            <button
+              class="btn btn-secondary ms-2 btn-sm"
+              type="button"
+              hx-get="{% url "calendar:index_by_year_month" year=previous_month_date.year month=previous_month_date.month %}"
+              hx-target="body"
+              hx-push-url="true"
+              data-bs-toggle="tooltip"
+              data-bs-placement="top"
+              title="Previous Month"
+            >
+              <img src="{% static "calendar/icons/chevron-left.svg" %}" alt="Previous">
+            </button>
+
+            <button
+              class="btn btn-secondary me-2 btn-sm"
+              type="button"
+              hx-get="{% url "calendar:index_by_year_month" year=next_month_date.year month=next_month_date.month %}"
+              hx-target="body"
+              hx-push-url="true"
+              data-bs-toggle="tooltip"
+              data-bs-placement="top"
+              title="Next Month"
+            >
+              <img src="{% static "calendar/icons/chevron-right.svg" %}" alt="Next">
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <!-- Tableau qui représente le calendrier -->
+        <table class="table table-bordered mt-2">
+          <thead class="table-dark">
+          {% for day_number in calendar.iterweekdays %}
+            <th style="width:14.2%"> {{ day_number|day_name }}</th>
+          {% endfor %}
+          </thead>
+
+          <tbody>
+          {% for week in weeks %}
+            <tr class="table-light">
+              {% for day in week %}
+                <td
+                  hx-get="/modal?date="
+                  hx-target="#modals-here"
+                  hx-trigger="click"
+                  _="on htmx:afterOnLoad wait 10ms then add .show to #modal then add .show to #modal-backdrop"
+                  class="{% if day.date == today %}table-info{% endif %}"
+                >
+                  <span>{% if day.date.month == month %}{{ day.date.day }}{% endif %}</span>
+                  <div
+                    class="mt-2"
+                    style="height:65px;"
+                  >
+                    {% for e in day.events %}
+                      <div class="badge text-bg-info text-start w-100">
+                        {{ e.start.hour }}:{{ e.start.minute }} - {{ e.name }}
+                      </div>
+                    {% endfor %}
+                  </div>
+                </td>
+              {% endfor %}
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+
+        <div id="modals-here"></div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

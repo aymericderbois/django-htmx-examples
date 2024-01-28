@@ -28,6 +28,11 @@ urlpatterns = [
         name="todomvc",
     ),
     path(
+        "calendar",
+        include("apps.calendar.urls", namespace="calendar"),
+        name="calendar",
+    ),
+    path(
         "__reload__/",
         include("django_browser_reload.urls"),
     ),
