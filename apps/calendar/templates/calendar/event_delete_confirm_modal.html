@@ -1,0 +1,29 @@
+<div
+  class="modal-dialog"
+  x-data="{isDeleting: false}"
+>
+  <div class="modal-content">
+
+    <div class="modal-header">
+      <h5 class="modal-title">Suppression de : {{ event.name }}</h5>
+      <button class="btn-close" data-bs-dismiss="modal" aria-label='Close' type="button"></button>
+    </div>
+
+    <div class="modal-body">
+      Êtes-vous sur de vouloir supprimer l'évènement de votre calendier du {{ event.start|date }}{{ event.start| time }} ?
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
+      <button
+        hx-delete="{% url "calendar:event_delete_modal" pk=event.pk %}"
+        @htmx:before-request="isDeleting=true"
+        class="btn btn-warning"
+      >
+          <span x-show="!isDeleting">Delete permanently</span>
+          <span x-show="isDeleting" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      </button>
+    </div>
+
+  </div>
+</div>

@@ -30,33 +30,36 @@
               data-bs-placement="top"
               title="Today"
             >
-              Today
+              <span class="htmx-hidden-when-request">Today</span>
+              <span class="spinner-border spinner-border-sm htmx-displayed-when-request" role="status" aria-hidden="true"></span>
             </button>
 
             <button
-              class="btn btn-secondary ms-2 btn-sm"
-              type="button"
               hx-get="{% url "calendar:index_by_year_month" year=previous_month_date.year month=previous_month_date.month %}"
               hx-target="body"
               hx-push-url="true"
               data-bs-toggle="tooltip"
               data-bs-placement="top"
               title="Previous Month"
+              type="button"
+              class="btn btn-secondary ms-2 btn-sm"
             >
-              <img src="{% static "calendar/icons/chevron-left.svg" %}" alt="Previous">
+              <img class="htmx-hidden-when-request"  src="{% static "calendar/icons/chevron-left.svg" %}" alt="Previous">
+              <span class="spinner-border spinner-border-sm htmx-displayed-when-request" role="status" aria-hidden="true"></span>
             </button>
 
             <button
-              class="btn btn-secondary me-2 btn-sm"
-              type="button"
               hx-get="{% url "calendar:index_by_year_month" year=next_month_date.year month=next_month_date.month %}"
               hx-target="body"
               hx-push-url="true"
               data-bs-toggle="tooltip"
               data-bs-placement="top"
               title="Next Month"
+              type="button"
+              class="btn btn-secondary me-2 btn-sm"
             >
-              <img src="{% static "calendar/icons/chevron-right.svg" %}" alt="Next">
+              <img class="htmx-hidden-when-request" src="{% static "calendar/icons/chevron-right.svg" %}" alt="Next">
+              <span class="spinner-border spinner-border-sm htmx-displayed-when-request" role="status" aria-hidden="true"></span>
             </button>
 
           </div>
@@ -77,10 +80,11 @@
             <tr class="table-light">
               {% for day in week %}
                 <td
-                  hx-get="/modal?date="
+                  hx-get="{% url "calendar:event_add_modal" %}"
                   hx-target="#modals-here"
                   hx-trigger="click"
-                  _="on htmx:afterOnLoad wait 10ms then add .show to #modal then add .show to #modal-backdrop"
+                  data-bs-toggle="modal"
+                  data-bs-target="#modals-here"
                   class="{% if day.date == today %}table-info{% endif %}"
                 >
                   <span>{% if day.date.month == month %}{{ day.date.day }}{% endif %}</span>
@@ -89,7 +93,15 @@
                     style="height:65px;"
                   >
                     {% for e in day.events %}
-                      <div class="badge text-bg-info text-start w-100">
+                      <div
+                        hx-get="{% url "calendar:event_edit_modal" pk=e.pk %}"
+                        hx-target="#modals-here"
+                        hx-trigger="click consume"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modals-here"
+                        class="badge text-bg-info text-start w-100 pe-0"
+                        role="button"
+                      >
                         {{ e.start.hour }}:{{ e.start.minute }} - {{ e.name }}
                       </div>
                     {% endfor %}
@@ -101,7 +113,37 @@
           </tbody>
         </table>
 
-        <div id="modals-here"></div>
+        <!-- Modal -->
+        <div
+          id="modals-here"
+          class="modal fade"
+          tabindex="-1"
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+          @htmx:before-request.window="
+            if ($event.detail.target === $el){
+              $el.innerHTML = document.querySelector('#template-inner-modal').innerHTML
+            }
+          "
+        >
+          <div class="modal-dialog" role="document"></div>
+        </div>
+
+        <!-- for template -->
+        <template id="template-inner-modal">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Loading ...</h5>
+                <button class="btn-close" data-bs-dismiss="modal" aria-label='Close' type="button"></button>
+              </div>
+              <div class="modal-body m-auto p-5">
+                <div class="spinner-border" role="status"></div>
+              </div>
+            </div>
+          </div>
+        </template>
+
       </div>
     </div>
   </div>

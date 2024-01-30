@@ -23,12 +23,12 @@ urlpatterns = [
         admin.site.urls,
     ),
     path(
-        "todomvc",
+        "todomvc/",
         include("apps.todomvc.urls", namespace="todomvc"),
         name="todomvc",
     ),
     path(
-        "calendar",
+        "calendar/",
         include("apps.calendar.urls", namespace="calendar"),
         name="calendar",
     ),
