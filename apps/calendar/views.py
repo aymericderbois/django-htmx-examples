@@ -59,7 +59,8 @@ def index(request: HttpRequest, year=None, month=None) -> HttpResponse:
 
 @require_http_methods(["GET", "POST"])
 def event_add_modal(request) -> HttpResponse:
-    form = EventForm(request.POST or None)
+    given_date = request.GET.get("date", datetime.date.today().strftime("%Y-%m-%d"))
+    form = EventForm(request.POST or None, initial={"start": given_date})
     if request.method == "POST" and form.is_valid():
         form.save()
         return HttpResponseLocation(request.htmx.current_url)

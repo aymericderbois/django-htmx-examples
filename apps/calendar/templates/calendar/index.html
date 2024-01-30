@@ -80,12 +80,13 @@
             <tr class="table-light">
               {% for day in week %}
                 <td
-                  hx-get="{% url "calendar:event_add_modal" %}"
+                  hx-get="{% url "calendar:event_add_modal" %}?date={{ day.date.year }}-{{ day.date.month }}-{{ day.date.day }}"
                   hx-target="#modals-here"
                   hx-trigger="click"
                   data-bs-toggle="modal"
                   data-bs-target="#modals-here"
                   class="{% if day.date == today %}table-info{% endif %}"
+                  role="button"
                 >
                   <span>{% if day.date.month == month %}{{ day.date.day }}{% endif %}</span>
                   <div
